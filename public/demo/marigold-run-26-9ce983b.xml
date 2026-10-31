@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Marigold Shop fixture. Not real CI output. -->
+<testsuite name="pytest" tests="18" failures="0" errors="1" skipped="0" time="16.106" timestamp="2026-04-09T17:00:00.000Z">
+    <properties>
+      <property name="commit" value="9ce983bfb0d2bd30a7dfd2af0badf0aaca37ca51"/>
+      <property name="ci.run_id" value="mg-1026"/>
+      <property name="ci.timestamp" value="2026-04-09T17:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/account.spec.ts" name="updates the display name" time="1.538">
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" time="0.659">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="adds a line for the selected sku" time="0.782">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="concurrent quantity updates keep a single line" time="1.116">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="removes a line and restores stock" time="1.419">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="lists the marigold ceramic mug" time="1.306">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="pdp shows glaze variants" time="1.358">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="accepts the visa test token" time="0.822">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="promo codes do not stack GOLD with WELCOME" time="0.336">
+      <error message="Promo code stacking rejected: GOLD cannot combine with WELCOME">Promo code stacking rejected: GOLD cannot combine with WELCOME
+    at /Users/ci/builds/marigold-shop/e2e/checkout.spec.ts:50:40
+    ruleSet=bb95eaf158e8
+    evaluated at 2026-04-09T17:00:00.000Z</error>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="rejects an expired card" time="0.466">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="0.794">
+    </testcase>
+    <testcase classname="tests/inventory.spec.ts" name="reservation releases when the hold expires" time="1.370">
+    </testcase>
+    <testcase classname="tests/nav.spec.ts" name="renders the seasonal promo bar" time="0.684">
+    </testcase>
+    <testcase classname="tests/orders.spec.ts" name="lists newest orders first" time="1.122">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="autocomplete settles after the debounce window" time="0.835">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="returns an exact sku match" time="0.276">
+    </testcase>
+    <testcase classname="tests/shipping.spec.ts" name="quotes the domestic zone" time="0.246">
+    </testcase>
+    <testcase classname="tests/wishlist.spec.ts" name="saves a sku for later" time="0.980">
+    </testcase>
+</testsuite>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Marigold Shop fixture. Not real CI output. -->
+<testsuites name="marigold-playwright" tests="19" failures="1">
+  <testsuite name="marigold-shop" hostname="ci-local" tests="19" failures="1" skipped="0" time="15.897" timestamp="2026-04-02T09:00:00.000Z">
+    <properties>
+      <property name="commit" value="4807a339c1f8c9bb10d967147e34887a8a49680d"/>
+      <property name="ci.run_id" value="mg-1004"/>
+      <property name="ci.timestamp" value="2026-04-02T09:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/account.spec.ts" name="updates the display name" time="1.282">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" time="1.572">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="adds a line for the selected sku" time="0.297">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="concurrent quantity updates keep a single line" time="0.271">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="removes a line and restores stock" time="0.985">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="lists the marigold ceramic mug" time="0.773">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="pdp shows glaze variants" time="1.285">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="accepts the visa test token" time="0.376">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="promo codes do not stack GOLD with WELCOME" time="0.796">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="rejects an expired card" time="1.463">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="0.113">
+      <properties><property name="retry" value="0"/></properties>
+      <failure message="Expected node to stay attached during assertion" type="Error">Expected node to stay attached during assertion
+    at /opt/ci/workspace/marigold-shop/e2e/checkout.spec.ts:132:55
+    elapsed 5285ms
+    request 0xbda53f9941f5
+    observed 2026-04-02T09:00:00.000Z</failure>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="0.859">
+      <properties><property name="retry" value="1"/></properties>
+    </testcase>
+    <testcase classname="tests/inventory.spec.ts" name="reservation releases when the hold expires" time="0.757">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/nav.spec.ts" name="renders the seasonal promo bar" time="0.590">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/orders.spec.ts" name="lists newest orders first" time="1.317">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="autocomplete settles after the debounce window" time="0.517">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="returns an exact sku match" time="0.694">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/shipping.spec.ts" name="quotes the domestic zone" time="1.302">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/wishlist.spec.ts" name="saves a sku for later" time="0.648">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+  </testsuite>
+</testsuites>

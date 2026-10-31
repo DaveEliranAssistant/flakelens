@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Marigold Shop fixture. Not real CI output. -->
+<testsuite name="pytest" tests="19" failures="0" errors="2" skipped="0" time="12.469" timestamp="2026-04-10T01:00:00.000Z">
+    <properties>
+      <property name="commit" value="4db804ec1333c9f542bac220f9249e373881f884"/>
+      <property name="ci.run_id" value="mg-1027"/>
+      <property name="ci.timestamp" value="2026-04-10T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/account.spec.ts" name="updates the display name" time="0.400">
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" time="0.544">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="adds a line for the selected sku" time="0.297">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="concurrent quantity updates keep a single line" time="0.183">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="removes a line and restores stock" time="0.750">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="lists the marigold ceramic mug" time="0.603">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="pdp shows glaze variants" time="0.109">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="accepts the visa test token" time="0.939">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="promo codes do not stack GOLD with WELCOME" time="0.945">
+      <error message="Promo code stacking rejected: GOLD cannot combine with WELCOME">Promo code stacking rejected: GOLD cannot combine with WELCOME
+    at /home/runner/work/marigold-shop/e2e/checkout.spec.ts:160:9
+    ruleSet=94666b304e0c
+    evaluated at 2026-04-10T01:00:00.000Z</error>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="rejects an expired card" time="1.537">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="0.442">
+      <error message="Expected node to stay attached during assertion">Expected node to stay attached during assertion
+    at /home/runner/work/marigold-shop/e2e/checkout.spec.ts:99:19
+    elapsed 1018ms
+    request 0xfb123f734eaf
+    observed 2026-04-10T01:00:00.000Z</error>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="0.702">
+    </testcase>
+    <testcase classname="tests/inventory.spec.ts" name="reservation releases when the hold expires" time="0.898">
+    </testcase>
+    <testcase classname="tests/nav.spec.ts" name="renders the seasonal promo bar" time="1.039">
+    </testcase>
+    <testcase classname="tests/orders.spec.ts" name="lists newest orders first" time="0.060">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="autocomplete settles after the debounce window" time="1.368">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="returns an exact sku match" time="0.327">
+    </testcase>
+    <testcase classname="tests/shipping.spec.ts" name="quotes the domestic zone" time="0.522">
+    </testcase>
+    <testcase classname="tests/wishlist.spec.ts" name="saves a sku for later" time="0.804">
+    </testcase>
+</testsuite>
