@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Marigold Shop fixture. Not real CI output. -->
+<testsuite name="pytest" tests="19" failures="0" errors="2" skipped="0" time="13.967" timestamp="2026-04-09T09:00:00.000Z">
+    <properties>
+      <property name="commit" value="029bf74528372fd0abfd086304c5d40912eccfd6"/>
+      <property name="ci.run_id" value="mg-1025"/>
+      <property name="ci.timestamp" value="2026-04-09T09:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/account.spec.ts" name="updates the display name" time="0.493">
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" time="1.260">
+      <error message="Expected node to stay attached during assertion">Expected node to stay attached during assertion
+    at C:\builds\marigold-shop\e2e\auth.spec.ts:149:55
+    elapsed 320ms
+    request 0x2b5c82e27b3b
+    observed 2026-04-09T09:00:00.000Z</error>
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" time="0.845">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="adds a line for the selected sku" time="0.110">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="concurrent quantity updates keep a single line" time="0.495">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="removes a line and restores stock" time="1.523">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="lists the marigold ceramic mug" time="0.209">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="pdp shows glaze variants" time="0.677">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="accepts the visa test token" time="1.109">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="promo codes do not stack GOLD with WELCOME" time="1.501">
+      <error message="Promo code stacking rejected: GOLD cannot combine with WELCOME">Promo code stacking rejected: GOLD cannot combine with WELCOME
+    at C:\builds\marigold-shop\e2e\checkout.spec.ts:125:38
+    ruleSet=41235ad5a6d3
+    evaluated at 2026-04-09T09:00:00.000Z</error>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="rejects an expired card" time="0.964">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="1.052">
+    </testcase>
+    <testcase classname="tests/inventory.spec.ts" name="reservation releases when the hold expires" time="0.268">
+    </testcase>
+    <testcase classname="tests/nav.spec.ts" name="renders the seasonal promo bar" time="0.856">
+    </testcase>
+    <testcase classname="tests/orders.spec.ts" name="lists newest orders first" time="1.010">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="autocomplete settles after the debounce window" time="0.502">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="returns an exact sku match" time="0.838">
+    </testcase>
+    <testcase classname="tests/shipping.spec.ts" name="quotes the domestic zone" time="0.187">
+    </testcase>
+    <testcase classname="tests/wishlist.spec.ts" name="saves a sku for later" time="0.068">
+    </testcase>
+</testsuite>

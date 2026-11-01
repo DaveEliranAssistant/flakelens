@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Marigold Shop fixture. Not real CI output. -->
+<testsuites name="marigold-playwright" tests="18" failures="1">
+  <testsuite name="marigold-shop" hostname="ci-local" tests="18" failures="1" skipped="0" time="15.046" timestamp="2026-04-04T01:00:00.000Z">
+    <properties>
+      <property name="commit" value="d0dbb37309c95c2641391571aea68f9f76624979"/>
+      <property name="ci.run_id" value="mg-1009"/>
+      <property name="ci.timestamp" value="2026-04-04T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/account.spec.ts" name="updates the display name" time="1.061">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" time="0.325">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="adds a line for the selected sku" time="1.230">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="concurrent quantity updates keep a single line" time="0.601">
+      <properties><property name="retry" value="0"/></properties>
+      <failure message="Expected node to stay attached during assertion" type="Error">Expected node to stay attached during assertion
+    at /home/runner/work/marigold-shop/e2e/cart.spec.ts:37:58
+    elapsed 7814ms
+    request 0xf25332771590
+    observed 2026-04-04T01:00:00.000Z</failure>
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="removes a line and restores stock" time="1.479">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="lists the marigold ceramic mug" time="0.486">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="pdp shows glaze variants" time="1.201">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="accepts the visa test token" time="0.789">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="promo codes do not stack GOLD with WELCOME" time="1.225">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="rejects an expired card" time="0.077">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" time="0.580">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/inventory.spec.ts" name="reservation releases when the hold expires" time="0.681">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/nav.spec.ts" name="renders the seasonal promo bar" time="1.181">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/orders.spec.ts" name="lists newest orders first" time="0.962">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="autocomplete settles after the debounce window" time="0.954">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="returns an exact sku match" time="0.689">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/shipping.spec.ts" name="quotes the domestic zone" time="0.237">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+    <testcase classname="tests/wishlist.spec.ts" name="saves a sku for later" time="1.288">
+      <properties><property name="retry" value="0"/></properties>
+    </testcase>
+  </testsuite>
+</testsuites>

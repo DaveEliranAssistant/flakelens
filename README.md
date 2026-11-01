@@ -1,1 +1,76 @@
-# flakelens
+# FlakeLens
+
+FlakeLens is a privacy-first flaky-test triage tool. You give it several JUnit XML files — one CI run each — and it separates oscillating tests from real regressions, then clusters the failures into root causes. Parsing and scoring run in the browser. There is no database and no upload API.
+
+The sample history is synthetic: a fictional shop called Marigold, produced by a seeded generator. It is not anyone's CI.
+
+## Run
+
+Node 24 (see `.nvmrc`).
+
+```bash
+nvm use
+npm install
+npx playwright install chromium
+npm test
+npm run test:e2e
+npm run build
+npm run dev
+```
+
+`npm run build` is a standard Next.js build, suitable for Vercel with no extra config. This repo does not deploy anything.
+
+Regenerate the committed demo fixtures after changing the seed plan:
+
+```bash
+npm run generate:demo
+```
+
+## What the demo contains
+
+`scripts/generate-demo.ts` writes 30 JUnit files to `public/demo/`. The outcomes are fixed in `src/lib/demo-plan.ts`:
+
+- 5 flaky tests (retry recoveries, same-commit reruns, and intermittent failures)
+- 1 regression, introduced at run 18 and failed on every attempt after that
+- 3 failure clusters after normalization
+- 12 stable tests that always pass
+
+Runs 1–10 look like Playwright XML, 11–20 like Jest, 21–30 like pytest. Test ids stay the same so the history joins.
+
+## Privacy model
+
+Dropped files are read with the File API and parsed locally. They are not sent to a server. The only network request the app makes for analysis is when you click **Load demo data**, which fetches the static synthetic XML from this same origin.
+
+The waitlist field writes the address to `localStorage` and opens a `mailto:` draft. There is no account server, no analytics call, and no payment.
+
+## How a verdict is chosen
+
+- **Regression.** Final results are all failures, or they switch once from pass to fail and then at least two runs stay failed. Every attempt from that commit onward fails, including retries, and no commit contains both a pass and a fail.
+- **Flaky.** The test fails without meeting that bar. A pass on retry, a same-commit rerun, or a single trailing failure all count. The flakiness score is `min(1, flip events / runs)`.
+- **Stable.** No failing attempts. Skips are ignored.
+
+Flip events are same-commit pass/fail mixes, runs that passed on retry, and oscillations of the final result between consecutive runs. Flip rate is flip events divided by executions (non-skip attempts). **Impact = flip rate × executions.** The cost estimate treats each failed attempt on a flaky test as one investigation. Regressions are listed separately and are not included. Minutes and hourly rate are editable assumptions.
+
+Failure clustering strips line:column numbers, durations, absolute paths, hex ids, and timestamps, then groups the remaining text. The summary reads `N failures = K root causes`.
+
+## Export
+
+Download a JSON report, download Markdown, or copy the quarantine list (the flaky test ids, one per line).
+
+## Limitations
+
+- Labels are a heuristic, not a proof that a test is nondeterministic or that a break is a product bug.
+- One file is one run. Retries are repeated testcase names or a numeric `retry` property.
+- Same-commit detection needs a shared SHA across files, or both outcomes inside one file.
+- A single trailing failure is called flaky. A test that fails in every uploaded run is a regression since the first included commit, which may be older than the underlying break.
+- Normalization can merge unrelated failures when the remaining words match, and it will split one cause when the messages differ by more than the stripped tokens.
+- There is no memory across reloads.
+
+## Roadmap
+
+- A GitHub Action and a CLI that emit this report on the runner without uploading JUnit to a service.
+- A paid tier for saved history across branches and a shared quarantine list. Not built here, and this POC does not take payment.
+
+## License
+
+All rights reserved. The owner has not chosen a public license yet. See `LICENSE`.

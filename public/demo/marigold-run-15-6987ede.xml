@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic Marigold Shop fixture. Not real CI output. -->
+<testsuites name="jest tests" tests="19" failures="1">
+  <testsuite name="tests/account.spec.ts" tests="1" failures="0" time="1.599">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/account.spec.ts" name="updates the display name" duration="1.599">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/auth.spec.ts" tests="2" failures="1" time="1.101">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" duration="0.795">
+      <failure>Expected node to stay attached during assertion
+    at C:\builds\marigold-shop\e2e\auth.spec.ts:238:25
+    elapsed 4754ms
+    request 0xebf3864ab46c
+    observed 2026-04-06T01:00:00.000Z</failure>
+    </testcase>
+    <testcase classname="tests/auth.spec.ts" name="session refresh does not drop the cart" duration="0.306">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/cart.spec.ts" tests="3" failures="0" time="3.193">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/cart.spec.ts" name="adds a line for the selected sku" duration="1.085">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="concurrent quantity updates keep a single line" duration="0.832">
+    </testcase>
+    <testcase classname="tests/cart.spec.ts" name="removes a line and restores stock" duration="1.276">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/catalog.spec.ts" tests="2" failures="0" time="0.469">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/catalog.spec.ts" name="lists the marigold ceramic mug" duration="0.380">
+    </testcase>
+    <testcase classname="tests/catalog.spec.ts" name="pdp shows glaze variants" duration="0.089">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/checkout.spec.ts" tests="4" failures="0" time="3.378">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/checkout.spec.ts" name="accepts the visa test token" duration="0.332">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="promo codes do not stack GOLD with WELCOME" duration="1.407">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="rejects an expired card" duration="1.550">
+    </testcase>
+    <testcase classname="tests/checkout.spec.ts" name="tax rounds half away from zero on split tenders" duration="0.089">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/inventory.spec.ts" tests="1" failures="0" time="0.341">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/inventory.spec.ts" name="reservation releases when the hold expires" duration="0.341">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/nav.spec.ts" tests="1" failures="0" time="1.417">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/nav.spec.ts" name="renders the seasonal promo bar" duration="1.417">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/orders.spec.ts" tests="1" failures="0" time="1.445">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/orders.spec.ts" name="lists newest orders first" duration="1.445">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/search.spec.ts" tests="2" failures="0" time="1.172">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/search.spec.ts" name="autocomplete settles after the debounce window" duration="0.542">
+    </testcase>
+    <testcase classname="tests/search.spec.ts" name="returns an exact sku match" duration="0.630">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/shipping.spec.ts" tests="1" failures="0" time="0.514">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/shipping.spec.ts" name="quotes the domestic zone" duration="0.514">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests/wishlist.spec.ts" tests="1" failures="0" time="0.571">
+    <properties>
+      <property name="commit" value="6987ede7ba01e9d66fdc72414d16ab66de127382"/>
+      <property name="ci.run_id" value="mg-1015"/>
+      <property name="ci.timestamp" value="2026-04-06T01:00:00.000Z"/>
+    </properties>
+    <testcase classname="tests/wishlist.spec.ts" name="saves a sku for later" duration="0.571">
+    </testcase>
+  </testsuite>
+</testsuites>
