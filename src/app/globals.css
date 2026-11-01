@@ -296,7 +296,8 @@ tbody th { text-transform: none; letter-spacing: 0; color: var(--ink); font-size
 .limitations ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
 .limitations li { margin: 0.35rem 0; }
 
-.site-footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--line); margin-top: 1rem; }
+.site-footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--line); margin-top: 1rem; flex-wrap: wrap; }
+.privacy-note { flex: 1 0 100%; margin: 0.35rem 0 0; max-width: 46rem; }
 
 .sr-only {
   position: absolute;

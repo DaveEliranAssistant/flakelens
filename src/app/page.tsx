@@ -88,6 +88,11 @@ export default function HomePage() {
             <a href="#triage">Triage</a>
             <a href="#limitations">Limitations</a>
           </nav>
+          <p className="privacy-note">
+            This site uses Vercel Web Analytics (cookieless, aggregated page views, no personal profiles). Privacy
+            questions:{" "}
+            <a href="mailto:dave.eliran.assistant@gmail.com">dave.eliran.assistant@gmail.com</a>
+          </p>
         </footer>
       </div>
     </>
