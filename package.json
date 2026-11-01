@@ -2,7 +2,7 @@
   "name": "flakelens",
   "version": "0.1.0",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "description": "Privacy-first flaky-test triage that runs entirely in the browser.",
   "engines": {
     "node": ">=24"
