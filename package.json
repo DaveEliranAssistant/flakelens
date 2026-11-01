@@ -17,6 +17,7 @@
     "generate:demo": "tsx scripts/generate-demo.ts"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "fast-xml-parser": "^5.11.2",
     "next": "^16.4.3",
     "react": "^19.3.1",

@@ -41,7 +41,9 @@ Runs 1–10 look like Playwright XML, 11–20 like Jest, 21–30 like pytest. Te
 
 Dropped files are read with the File API and parsed locally. They are not sent to a server. The only network request the app makes for analysis is when you click **Load demo data**, which fetches the static synthetic XML from this same origin.
 
-The waitlist field writes the address to `localStorage` and opens a `mailto:` draft. There is no account server, no analytics call, and no payment.
+The waitlist field writes the address to `localStorage` and opens a `mailto:` draft. There is no account server and no payment.
+
+This site uses Vercel Web Analytics (cookieless, aggregated page views, no personal profiles). Privacy questions: dave.eliran.assistant@gmail.com.
 
 ## How a verdict is chosen
 

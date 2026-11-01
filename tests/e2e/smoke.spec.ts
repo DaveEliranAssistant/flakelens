@@ -8,6 +8,16 @@ test("loads the synthetic demo and shows flaky and regression verdicts", async (
   await page.goto("/");
   await expect(page.getByText("Your files never leave your browser")).toBeVisible();
   await expect(page.getByText("Demo data is synthetic.")).toBeVisible();
+  await expect(
+    page.getByText(
+      "This site uses Vercel Web Analytics (cookieless, aggregated page views, no personal profiles).",
+    ),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "dave.eliran.assistant@gmail.com" })).toHaveAttribute(
+    "href",
+    "mailto:dave.eliran.assistant@gmail.com",
+  );
+  await expect(page.locator('script[src*="va.vercel-scripts.com"], script[src="/_vercel/insights/script.js"]')).toHaveCount(1);
 
   await page.getByRole("button", { name: "Load demo data" }).click();
   await expect(page.getByTestId("root-cause-summary")).toHaveText("32 failures = 3 root causes");
