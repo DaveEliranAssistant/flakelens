@@ -68,9 +68,24 @@ Download a JSON report, download Markdown, or copy the quarantine list (the flak
 - Normalization can merge unrelated failures when the remaining words match, and it will split one cause when the messages differ by more than the stripped tokens.
 - There is no memory across reloads.
 
+## Runner CLI (thin adapter)
+
+The CLI uses the same `parseJUnit`, `analyzeRuns` and report renderers as the browser—no separate flakiness algorithm, server or upload API. With Node 24 and locked dependencies installed:
+
+```bash
+npm ci --ignore-scripts
+node --import tsx scripts/cli.ts \
+  --json /new/output/flakelens.json --markdown /new/output/flakelens.md \
+  /inputs/junit-01.xml /inputs/junit-02.xml /inputs/junit-03.xml
+```
+
+Outputs must be distinct new files in existing directories. Exit `0` means analysis was produced (flakiness/regression findings are informational), and `2` means invalid input or a local tool/I/O failure. CI can append the Markdown to its job summary. Artifacts can also be loaded into the browser at <https://flakelens.vercel.app>.
+
+The adapter limits input to 100 files, 2 MiB per file, 10 MiB total and 50,000 attempts per file; it rejects symbolic-link final components, DTD/entity declarations, invalid UTF-8 and malformed XML before calling the shared parser. This is bounded local file processing, not an OS sandbox. Reports may contain sensitive test names and failure text; choose artifact visibility accordingly. No repository/test code is executed by parsing. Five reruns of one commit can show same-commit flakiness but cannot prove a commit-regression boundary.
+
 ## Roadmap
 
-- A GitHub Action and a CLI that emit this report on the runner without uploading JUnit to a service.
+- A dedicated GitHub Action and persisted-history integration. The thin runner CLI above does not provide these.
 - A paid tier for saved history across branches and a shared quarantine list. Not built here, and this POC does not take payment.
 
 ## License
