@@ -64,7 +64,7 @@ describe("cluster", () => {
     expect(pytest).not.toContain(":10:");
   });
 
-  it("collapses the seeded history into exactly three root causes", () => {
+  it("collapses the seeded history into exactly three heuristic clusters", () => {
     const analysis = loadDemoAnalysis();
     const searchId = testId("tests/search.spec.ts", "autocomplete settles after the debounce window");
     const inventoryId = testId("tests/inventory.spec.ts", "reservation releases when the hold expires");
@@ -76,7 +76,7 @@ describe("cluster", () => {
     expect(analysis.clusters).toHaveLength(3);
     expect(analysis.rootCauseCount).toBe(3);
     expect(analysis.failureCount).toBe(32);
-    expect(rootCauseSummary(analysis.failureCount, analysis.rootCauseCount)).toBe("32 failures = 3 root causes");
+    expect(rootCauseSummary(analysis.failureCount, analysis.rootCauseCount)).toBe("32 failed attempts · 3 heuristic message clusters (not confirmed root causes)");
     expect([...analysis.clusters.map((cluster) => cluster.count)].sort((a, b) => a - b)).toEqual([9, 10, 13]);
 
     const byLabel = new Map(analysis.clusters.map((cluster) => [cluster.label, cluster]));
@@ -95,7 +95,7 @@ describe("cluster", () => {
     }
 
     expect(clusterFailures([])).toEqual([]);
-    expect(rootCauseSummary(1, 1)).toBe("1 failure = 1 root cause");
+    expect(rootCauseSummary(1, 1)).toBe("1 failed attempt · 1 heuristic message cluster (not confirmed root causes)");
   });
 
   it("keeps committed fixtures identical to the generator", () => {

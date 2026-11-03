@@ -168,7 +168,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
 
 .summary {
   display: grid;
-  grid-template-columns: 1.4fr repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.8rem;
   margin: 1rem 0;
 }
@@ -180,7 +180,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
   padding: 0.9rem 1rem;
 }
 
-.summary article.cause { background: var(--ink); color: #f6f1e7; }
+.summary article.cause { grid-column: 1 / -1; background: var(--ink); color: #f6f1e7; }
 
 .summary article.cause p, .summary strong { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.1rem); letter-spacing: -0.03em; margin: 0.2rem 0; }
 
@@ -272,6 +272,10 @@ tbody th { text-transform: none; letter-spacing: 0; color: var(--ink); font-size
 .badge-flaky { background: var(--rust-soft); color: var(--rust); }
 .badge-regression { background: var(--wine-soft); color: var(--wine); }
 .badge-stable { background: var(--green-soft); color: var(--green); }
+.badge-insufficient-evidence { background: #fff2ce; color: #694b00; }
+.evidence { font-family: var(--sans); font-size: 0.85rem; font-weight: normal; letter-spacing: normal; overflow-wrap: anywhere; margin-top: 0.6rem; }
+.evidence summary { cursor: pointer; color: var(--green); }
+.evidence li { margin: 0.5rem 0; }
 
 .spark { display: inline-flex; gap: 2px; align-items: end; height: 16px; }
 .spark i { width: 6px; height: 14px; display: block; background: var(--line-strong); border-radius: 1px; }

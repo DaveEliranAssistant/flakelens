@@ -27,7 +27,7 @@ export function Workspace() {
       }
     });
     setErrors(nextErrors);
-    setAnalysis(parsed.length > 0 ? analyzeRuns(parsed) : null);
+    setAnalysis(nextErrors.length === 0 && parsed.length > 0 ? analyzeRuns(parsed) : null);
   }
 
   async function onFiles(list: FileList | File[]) {
@@ -83,7 +83,7 @@ export function Workspace() {
         <h2>One file, one CI run.</h2>
         <p>
           Drag in several JUnit XML files, or browse for them. Commit, run id, and time are read from properties, then
-          from the filename, then from file order.
+          from the filename. File-order fallback is labeled missing metadata, not a verified commit or run history.
         </p>
         <div className="actions">
           <button type="button" className="primary" onClick={() => void loadDemo()} disabled={loading}>

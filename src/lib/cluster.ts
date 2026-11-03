@@ -53,7 +53,7 @@ export function clusterFailures(attempts: TimedAttempt[]): Cluster[] {
 }
 
 export function rootCauseSummary(failureCount: number, rootCauseCount: number): string {
-  const failures = failureCount === 1 ? "failure" : "failures";
-  const causes = rootCauseCount === 1 ? "root cause" : "root causes";
-  return `${failureCount} ${failures} = ${rootCauseCount} ${causes}`;
+  const attempts = failureCount === 1 ? "failed attempt" : "failed attempts";
+  const clusters = rootCauseCount === 1 ? "heuristic message cluster" : "heuristic message clusters";
+  return `${failureCount} ${attempts} · ${rootCauseCount} ${clusters} (not confirmed root causes)`;
 }

@@ -20,7 +20,7 @@ test("loads the synthetic demo and shows flaky and regression verdicts", async (
   await expect(page.locator('script[src*="va.vercel-scripts.com"], script[src="/_vercel/insights/script.js"]')).toHaveCount(1);
 
   await page.getByRole("button", { name: "Load demo data" }).click();
-  await expect(page.getByTestId("root-cause-summary")).toHaveText("32 failures = 3 root causes");
+  await expect(page.getByTestId("root-cause-summary")).toHaveText("32 failed attempts · 3 heuristic message clusters (not confirmed root causes)");
   await expect(page.getByTestId("test-row")).toHaveCount(18);
 
   const rows = await page.getByTestId("test-row").evaluateAll((elements) =>
@@ -32,7 +32,8 @@ test("loads the synthetic demo and shows flaky and regression verdicts", async (
   const flaky = rows.flatMap((row) => (row.verdict === "flaky" && row.id ? [row.id] : [])).sort();
   const regressions = rows.filter((row) => row.verdict === "regression");
 
-  expect(flaky).toEqual([...FLAKY_TEST_IDS].sort());
+  expect(flaky).toEqual([FLAKY_TEST_IDS[0], FLAKY_TEST_IDS[2], FLAKY_TEST_IDS[4]].sort());
+  expect(rows.filter(r=>r.verdict==="insufficient-evidence").map(r=>r.id).sort()).toEqual([FLAKY_TEST_IDS[1],FLAKY_TEST_IDS[3]].sort());
   expect(regressions).toEqual([{ id: REGRESSION_TEST_ID, verdict: "regression" }]);
   expect(flaky).not.toContain(REGRESSION_TEST_ID);
 
@@ -40,9 +41,8 @@ test("loads the synthetic demo and shows flaky and regression verdicts", async (
   await expect(regressionRow).toHaveCount(1);
   await expect(regressionRow.locator('[data-testid="introduced-commit"]')).toHaveText(introduced);
 
-  // Impact order: search 10, tax 8, inventory 8, cart 7, session 6.
-  // Tax precedes inventory when the product ties because its id sorts first.
-  const quarantine = [FLAKY_TEST_IDS[1], FLAKY_TEST_IDS[0], FLAKY_TEST_IDS[3], FLAKY_TEST_IDS[2], FLAKY_TEST_IDS[4]];
-  await expect(page.getByTestId("quarantine-list")).toHaveValue(quarantine.join("\n"));
+  // Regression and abstentions stay actionable, before heuristic flake ranks.
+  const review = [REGRESSION_TEST_ID, FLAKY_TEST_IDS[3], FLAKY_TEST_IDS[1], FLAKY_TEST_IDS[2], FLAKY_TEST_IDS[0], FLAKY_TEST_IDS[4]];
+  await expect(page.getByTestId("review-list")).toHaveValue(review.join("\n"));
   await expect(page.getByTestId("waitlist-form")).not.toHaveAttribute("action");
 });

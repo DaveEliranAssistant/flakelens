@@ -1,5 +1,5 @@
 export type AttemptStatus = "pass" | "fail" | "skip";
-export type Verdict = "flaky" | "regression" | "stable";
+export type Verdict = "flaky" | "regression" | "stable" | "insufficient-evidence";
 export type CommitSource = "file" | "filename" | "order";
 export type RunIdSource = "file" | "filename" | "order";
 
@@ -12,6 +12,7 @@ export type Attempt = {
   message: string;
   details: string;
   retryIndex: number;
+  retrySource?: "property" | "sequence";
   sequence: number;
   commit: string;
   runId: string;
@@ -22,6 +23,8 @@ export type Attempt = {
 
 export type TimedAttempt = Attempt & {
   chronology: number;
+  commitSource?: CommitSource;
+  runIdSource?: RunIdSource;
 };
 
 export type ParsedRun = {
@@ -45,6 +48,10 @@ export type HistoryPoint = {
   finalStatus: AttemptStatus;
   attemptStatuses: AttemptStatus[];
   passedOnRetry: boolean;
+  retryIndexes: number[];
+  retrySources: string[];
+  commitSource: CommitSource;
+  runIdSource: RunIdSource;
 };
 
 export type TestAnalysis = {
@@ -64,6 +71,19 @@ export type TestAnalysis = {
   crossRunOscillations: number;
   introducedCommit: string | null;
   history: HistoryPoint[];
+  evidence: {
+    policy: "flakelens.evidence/1";
+    heuristic: true;
+    reasonCodes: string[];
+    explanation: string;
+    runCount: number;
+    missingCommitRuns: number;
+    missingRunIdRuns: number;
+    inferredRetryAttempts: number;
+    chronology: "timestamp" | "file-order";
+    warnings: string[];
+    action: string;
+  };
 };
 
 export type Cluster = {
@@ -94,5 +114,6 @@ export type Analysis = {
   flakyCount: number;
   regressionCount: number;
   stableCount: number;
+  insufficientEvidenceCount: number;
   flakyFailures: number;
 };

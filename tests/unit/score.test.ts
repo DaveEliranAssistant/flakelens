@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 import { analyzeRuns } from "@/lib/analyze";
 import { compareText } from "@/lib/compare";
 import {
-  FLAKY_TEST_IDS,
   REGRESSION_INTRODUCED_AT_RUN,
   REGRESSION_TEST_ID,
   demoRuns,
@@ -22,25 +21,27 @@ const cartId = testId("tests/cart.spec.ts", "concurrent quantity updates keep a 
 const sessionId = testId("tests/auth.spec.ts", "session refresh does not drop the cart");
 
 describe("score", () => {
-  it("labels a clean pass-to-fail boundary as a regression and a single trailing failure as flaky", () => {
+  it("abstains on file-order-only boundaries, single failures and all-failing samples", () => {
     const boundary = analyzeRuns([
       xmlRun("pass", 0),
       xmlRun("pass", 1),
       xmlRun("fail", 2),
       xmlRun("fail", 3),
     ]).tests[0];
-    expect(boundary?.verdict).toBe("regression");
-    expect(boundary?.introducedCommit).toBe("order-2");
+    expect(boundary?.verdict).toBe("insufficient-evidence");
+    expect(boundary?.introducedCommit).toBeNull();
+    expect(boundary?.evidence.reasonCodes).toContain("missing-commit-metadata");
     expect(boundary?.flakinessScore).toBe(0);
     expect(boundary?.impact).toBe(0);
 
     const trailing = analyzeRuns([xmlRun("pass", 0), xmlRun("pass", 1), xmlRun("fail", 2)]).tests[0];
-    expect(trailing?.verdict).toBe("flaky");
+    expect(trailing?.verdict).toBe("insufficient-evidence");
     expect(trailing?.verdict).not.toBe("regression");
 
     const always = analyzeRuns([xmlRun("fail", 0), xmlRun("fail", 1)]).tests[0];
-    expect(always?.verdict).toBe("regression");
-    expect(always?.introducedCommit).toBe("order-0");
+    expect(always?.verdict).toBe("insufficient-evidence");
+    expect(always?.introducedCommit).toBeNull();
+    expect(always?.evidence.reasonCodes).toContain("no-passing-baseline");
 
     const calm = analyzeRuns([xmlRun("pass", 0), xmlRun("pass", 1)]).tests[0];
     expect(calm?.verdict).toBe("stable");
@@ -91,12 +92,12 @@ describe("score", () => {
         0,
       ),
       xmlRun("pass", 1),
-    ]).tests[0];
+    ]).tests.find(test=>test.name==="keeps the total");
     expect(run?.verdict).toBe("stable");
     expect(run?.failures).toBe(0);
   });
 
-  it("labels the seeded regression as regression, and flags exactly the five seeded flaky tests", () => {
+  it("keeps the frozen seeded observations, but abstains on cross-commit-only cases", () => {
     const analysis = loadDemoAnalysis();
     const runs = demoRuns();
     const byId = new Map(analysis.tests.map((test) => [test.testId, test]));
@@ -112,16 +113,18 @@ describe("score", () => {
     expect(regression?.flakinessScore).toBe(0);
     expect(regression?.impact).toBe(0);
     expect(flaky).not.toContain(REGRESSION_TEST_ID);
-    expect([...flaky].sort(compareText)).toEqual([...FLAKY_TEST_IDS].sort(compareText));
+    expect([...flaky].sort(compareText)).toEqual([taxId, cartId, sessionId].sort(compareText));
+    expect([searchId, inventoryId].sort(compareText)).toEqual(analysis.tests.filter(t=>t.verdict==="insufficient-evidence").map(t=>t.testId).sort(compareText));
     expect(analysis.stableCount).toBe(12);
-    expect(analysis.flakyCount).toBe(5);
+    expect(analysis.flakyCount).toBe(3);
+    expect(analysis.insufficientEvidenceCount).toBe(2);
     expect(analysis.regressionCount).toBe(1);
 
-    expect(flipFacts(byId, searchId)).toEqual({ failures: 5, executions: 30, flipEvents: 10 });
-    expect(flipFacts(byId, inventoryId)).toEqual({ failures: 4, executions: 30, flipEvents: 8 });
-    expect(flipFacts(byId, taxId)).toEqual({ failures: 4, executions: 34, flipEvents: 8 });
-    expect(flipFacts(byId, sessionId)).toEqual({ failures: 3, executions: 33, flipEvents: 6 });
-    expect(flipFacts(byId, cartId)).toEqual({ failures: 3, executions: 31, flipEvents: 7 });
+    expect(flipFacts(byId, searchId)).toEqual({ failures: 5, executions: 30, flipEvents: 0 });
+    expect(flipFacts(byId, inventoryId)).toEqual({ failures: 4, executions: 30, flipEvents: 0 });
+    expect(flipFacts(byId, taxId)).toEqual({ failures: 4, executions: 34, flipEvents: 5 });
+    expect(flipFacts(byId, sessionId)).toEqual({ failures: 3, executions: 33, flipEvents: 4 });
+    expect(flipFacts(byId, cartId)).toEqual({ failures: 3, executions: 31, flipEvents: 6 });
 
     for (const test of analysis.tests) {
       expect(test.impact).toBeCloseTo(test.flipRate * test.executions, 8);
@@ -133,9 +136,12 @@ describe("score", () => {
       }
     }
 
-    expect(analysis.flakyFailures).toBe(19);
+    // Raw failures/executions and generator remain frozen. Only explicit retries count as confirmed recoveries.
+    expect(byId.get(searchId)?.crossRunOscillations).toBe(10);
+    expect(byId.get(inventoryId)?.crossRunOscillations).toBe(8);
+    expect(analysis.flakyFailures).toBe(10);
     expect(analysis.failureCount).toBe(32);
-    expect(estimateFlakeCost(analysis.flakyFailures, 15, 100).cost).toBe(475);
+    expect(estimateFlakeCost(analysis.flakyFailures, 15, 100).cost).toBe(250);
   });
 
   it("sorts seeded runs by timestamp when the files are handed over in reverse", () => {

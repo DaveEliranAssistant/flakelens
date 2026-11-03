@@ -1,0 +1,103 @@
+{
+  "label": "SYNTHETIC fixture, not customer measurements",
+  "beforeRevision": "e0a76acf21b83a0cb4b73ee82035582ed8488e1b",
+  "beforeSummary": {
+    "runs": 4,
+    "tests": 8,
+    "flaky": 4,
+    "regressions": 2,
+    "stable": 2,
+    "failures": 9,
+    "rootCauses": 4,
+    "summary": "9 failures = 4 root causes",
+    "flakyFailures": 4
+  },
+  "afterSummary": {
+    "runs": 4,
+    "tests": 8,
+    "flaky": 1,
+    "regressions": 1,
+    "stable": 1,
+    "insufficientEvidence": 5,
+    "failures": 9,
+    "heuristicClusters": 4,
+    "summary": "9 failed attempts \u00b7 4 heuristic message clusters (not confirmed root causes)",
+    "flakyFailures": 1
+  },
+  "examples": [
+    {
+      "testId": "triage > clean",
+      "before": "stable",
+      "after": "stable",
+      "reasonCodes": [
+        "no-failures-observed"
+      ]
+    },
+    {
+      "testId": "triage > cross-commit",
+      "before": "flaky",
+      "after": "insufficient-evidence",
+      "reasonCodes": [
+        "cross-commit-only"
+      ]
+    },
+    {
+      "testId": "triage > missing",
+      "before": "flaky",
+      "after": "insufficient-evidence",
+      "reasonCodes": [
+        "single-failure",
+        "missing-commit-metadata",
+        "missing-run-metadata",
+        "unverified-history-order"
+      ]
+    },
+    {
+      "testId": "triage > never-green",
+      "before": "regression",
+      "after": "insufficient-evidence",
+      "reasonCodes": [
+        "no-passing-baseline"
+      ]
+    },
+    {
+      "testId": "triage > recovery",
+      "before": "flaky",
+      "after": "flaky",
+      "reasonCodes": [
+        "retry-recovery",
+        "same-commit-outcomes"
+      ]
+    },
+    {
+      "testId": "triage > regression",
+      "before": "regression",
+      "after": "regression",
+      "reasonCodes": [
+        "persistent-failure-after-pass"
+      ]
+    },
+    {
+      "testId": "triage > single",
+      "before": "flaky",
+      "after": "insufficient-evidence",
+      "reasonCodes": [
+        "single-failure"
+      ]
+    },
+    {
+      "testId": "triage > skip-only",
+      "before": "stable",
+      "after": "insufficient-evidence",
+      "reasonCodes": [
+        "no-executed-attempts"
+      ]
+    }
+  ],
+  "inputs": {
+    "missing-metadata.xml": "ef3ebf3482f2e80f9a5760da1bc496bf3177c540d8a417730348c9970793ecd9",
+    "run-1.xml": "3d7407a5ded120424f626c4af40487e3ba0f6cceea217d956669f9277402a903",
+    "run-2.xml": "60b243153061ce250394dfc8d6e8ed6dfc69286b9f0c9d9dfbf62d4190861ea8",
+    "run-3.xml": "1a0b390e7c35e40a5405e5dc8bf6ed04cdd758ed7b588bdf3beb6bd4b3ddf823"
+  }
+}

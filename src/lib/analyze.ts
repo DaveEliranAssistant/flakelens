@@ -1,4 +1,3 @@
-import { compareText } from "@/lib/compare";
 import { clusterFailures } from "@/lib/cluster";
 import { scoreTests } from "@/lib/score";
 import type { Analysis, ParsedRun, TimedAttempt } from "@/lib/types";
@@ -7,11 +6,11 @@ export function sortRuns<T extends ParsedRun>(runs: T[]): T[] {
   return runs
     .map((run, index) => ({ run, index }))
     .sort((a, b) => {
-      const left = a.run.timestamp;
-      const right = b.run.timestamp;
-      if (left && right && left !== right) return compareText(left, right);
-      if (left && !right) return -1;
-      if (!left && right) return 1;
+      const left = a.run.timestamp ? Date.parse(a.run.timestamp) : NaN;
+      const right = b.run.timestamp ? Date.parse(b.run.timestamp) : NaN;
+      if (Number.isFinite(left) && Number.isFinite(right) && left !== right) return left - right;
+      if (Number.isFinite(left) && !Number.isFinite(right)) return -1;
+      if (!Number.isFinite(left) && Number.isFinite(right)) return 1;
       if (a.run.order !== b.run.order) return a.run.order - b.run.order;
       return a.index - b.index;
     })
@@ -21,7 +20,7 @@ export function sortRuns<T extends ParsedRun>(runs: T[]): T[] {
 export function analyzeRuns(parsed: ParsedRun[]): Analysis {
   const sorted = sortRuns(parsed);
   const attempts: TimedAttempt[] = sorted.flatMap((run, chronology) =>
-    run.attempts.map((attempt) => ({ ...attempt, chronology })),
+    run.attempts.map((attempt) => ({ ...attempt, chronology, commitSource: run.commitSource, runIdSource: run.runIdSource })),
   );
   const tests = scoreTests(attempts);
   const clusters = clusterFailures(attempts);
@@ -45,6 +44,7 @@ export function analyzeRuns(parsed: ParsedRun[]): Analysis {
     flakyCount: tests.filter((test) => test.verdict === "flaky").length,
     regressionCount: tests.filter((test) => test.verdict === "regression").length,
     stableCount: tests.filter((test) => test.verdict === "stable").length,
+    insufficientEvidenceCount: tests.filter((test) => test.verdict === "insufficient-evidence").length,
     flakyFailures,
   };
 }
