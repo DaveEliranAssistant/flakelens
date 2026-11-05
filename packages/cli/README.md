@@ -1,10 +1,8 @@
 # @qe-atlas/flakelens
 
-Local JUnit flaky-test triage using the same parser/scorer as FlakeLens. Prerelease candidate **0.1.0-rc.1**, unpublished by this readiness work. Node 22+; Linux/macOS targeted. Windows is not qualified (`O_NOFOLLOW` file handling is platform dependent).
+Local JUnit flaky-test triage using the same parser/scorer as FlakeLens. Prerelease **0.1.0-rc.1** on the npm `next` tag. Node 22+; Linux/macOS targeted. Windows is not qualified (`O_NOFOLLOW` file handling is platform dependent).
 
-## Use after an approved npm release
-
-These prospective commands require the package to have been published first:
+## Use
 
 ```sh
 npm exec --package=@qe-atlas/flakelens@0.1.0-rc.1 -- flakelens --help
@@ -12,7 +10,7 @@ npm exec --package=@qe-atlas/flakelens@0.1.0-rc.1 -- flakelens \
   --json report.json --markdown report.md run-1.xml run-2.xml run-3.xml
 ```
 
-Before publication use the reviewed local tarball instead:
+To install from a reviewed local tarball instead:
 
 ```sh
 npm install --ignore-scripts --prefix ./isolated-cli /absolute/path/qe-atlas-flakelens-0.1.0-rc.1.tgz
@@ -25,7 +23,7 @@ Exit **0** means a report was produced, even when regressions/flakiness are foun
 
 Inputs: at most 100 unique regular files, 2 MiB each and 10 MiB total; DTD/entities and malformed XML refused. Existing files are not overwritten. A later I/O failure can leave earlier outputs: inspect/remove partial outputs manually and retry with new paths. Local file limits are not an OS sandbox.
 
-## Maintainer release checklist — not executed here
+## Maintainer release checklist
 
 From a clean checkout:
 
@@ -39,7 +37,6 @@ npm whoami # must print qe-atlas
 cd packages/cli
 npm pack --dry-run
 npm publish --dry-run --access public --tag next
-# Future separately authorized publication only:
 npm publish --access public --tag next
 ```
 
