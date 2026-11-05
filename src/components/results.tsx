@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { rootCauseSummary } from "@/lib/cluster";
 import { estimateFlakeCost } from "@/lib/impact";
-import { analysisToJson, analysisToMarkdown, quarantineList } from "@/lib/report";
+import { analysisToJson, analysisToMarkdown, reviewList } from "@/lib/report";
 import type { Analysis, Verdict } from "@/lib/types";
 
 const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -13,14 +13,14 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
   const [rate, setRate] = useState("100");
   const [copyNote, setCopyNote] = useState("");
   const cost = estimateFlakeCost(analysis.flakyFailures, numberOrZero(minutes), numberOrZero(rate));
-  const quarantine = quarantineList(analysis);
+  const candidates = reviewList(analysis);
   const flaky = analysis.tests.filter((test) => test.verdict === "flaky");
   const regressions = analysis.tests.filter((test) => test.verdict === "regression");
 
-  async function copyQuarantine() {
+  async function copyReview() {
     try {
-      await navigator.clipboard.writeText(quarantine);
-      setCopyNote("Copied the quarantine list.");
+      await navigator.clipboard.writeText(candidates);
+      setCopyNote("Copied review candidates. No quarantine actions applied.");
     } catch {
       setCopyNote("Clipboard blocked. Copy the list from the box.");
     }
@@ -42,13 +42,14 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
           <strong>{analysis.regressionCount}</strong>
         </article>
         <article>
-          <span>Stable</span>
+          <span>No failures observed</span>
           <strong>{analysis.stableCount}</strong>
         </article>
+        <article><span>Insufficient evidence</span><strong>{analysis.insufficientEvidenceCount}</strong></article>
       </div>
 
       <p className="hint">
-        {sourceLabel}. {analysis.runs.length} runs, {analysis.tests.length} tests. Impact = flip rate × executions.
+        {sourceLabel}. {analysis.runs.length} runs, {analysis.tests.length} tests. Observational heuristics, not probabilities. Keep original CI failures actionable; nothing is automatically quarantined.
       </p>
 
       <ol className="runs" aria-label="Failures per run">
@@ -65,7 +66,7 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
           <span>Regression</span>
           <h3>{test.name}</h3>
           <p>
-            Consistently failing since <code>{test.introducedCommit}</code>. This is not counted as flakiness.
+            First observed failing commit <code>{test.introducedCommit}</code>. Persistent regression pattern, not proof this commit caused it. Investigate; this is not counted as flakiness.
           </p>
         </article>
       ))}
@@ -73,7 +74,7 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
       <div className="layout">
         <section className="panel">
           <h2>Top impact</h2>
-          <p className="hint">Ranked by flip rate × executions. Same-commit mixes and passed-on-retry runs both count.</p>
+          <p className="hint">Heuristic rank = flip rate × executions. Signals can overlap; this is not a probability or severity measurement.</p>
           {flaky.length === 0 ? (
             <p>No flaky tests in this history.</p>
           ) : (
@@ -90,11 +91,11 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
         </section>
 
         <section className="cost">
-          <span>Cost of flakiness</span>
+          <span>Scenario cost estimate</span>
           <p className="figure">{money.format(cost.cost)}</p>
           <p>
             {cost.flakyFailures} flaky failures × {cost.minutesPerInvestigation} min × {money.format(cost.hourlyRate)}/hr.
-            Regressions are excluded. This is an assumption you can edit.
+            Regressions and insufficient evidence are excluded. Assumes one investigation per failing attempt, which may overcount. Not measured cost or savings.
           </p>
           <div className="cost-fields">
             <label>
@@ -110,7 +111,8 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
       </div>
 
       <section className="panel">
-        <h2>Root causes</h2>
+        <h2>Heuristic failure clusters</h2>
+        <p className="hint">Similar messages do not prove a shared root cause.</p>
         <div className="clusters">
           {analysis.clusters.map((cluster) => (
             <article className="cluster" key={cluster.signature}>
@@ -133,12 +135,12 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
       <section className="panel">
         <h2>Every test</h2>
         <div className="table-wrap">
-          <table aria-label="Tests ranked with regressions first, then flaky tests by impact, then stable tests.">
+          <table aria-label="Tests ranked with regressions first, then insufficient evidence, flaky and no observed failures.">
             <thead>
               <tr>
                 <th scope="col">Test</th>
                 <th scope="col">Verdict</th>
-                <th scope="col">Score</th>
+                <th scope="col">Heuristic score</th>
                 <th scope="col">Flip rate</th>
                 <th scope="col">Executions</th>
                 <th scope="col">Impact</th>
@@ -149,18 +151,27 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
               {analysis.tests.map((test) => (
                 <tr key={test.testId} data-testid="test-row" data-test-id={test.testId} data-verdict={test.verdict}>
                   <th scope="row" className="test-id">
-                    {test.testId}
+                    <span>{test.testId}</span>
                     {test.verdict === "regression" && test.introducedCommit ? (
                       <span className="since">
                         since <code data-testid="introduced-commit">{test.introducedCommit}</code>
                       </span>
                     ) : null}
+                    <details className="evidence"><summary>Why this verdict</summary>
+                      <p>{test.evidence.explanation}</p>
+                      <p>Reasons: {test.evidence.reasonCodes.join(", ")}</p>
+                      <p>{test.evidence.runCount} runs; {test.executions} executed attempts; {test.passes} pass; {test.failures} fail; {test.passedOnRetry} explicit retry recoveries; {test.sameCommitFlips} same-commit mixes.</p>
+                      <p>Chronology: {test.evidence.chronology}. Missing commit/run IDs: {test.evidence.missingCommitRuns}/{test.evidence.missingRunIdRuns}.</p>
+                      <p>{test.evidence.action}</p>
+                      <ul>{test.evidence.warnings.map(w=><li key={w}>{w}</li>)}</ul>
+                      <ol>{test.history.map(h=><li key={h.chronology}>Run {h.runId}; commit {h.commit} ({h.commitSource}); run ID source {h.runIdSource}; time {h.timestamp??"missing"}; file {h.sourceName}; attempts {h.attemptStatuses.join(" → ")}; retry indexes {h.retryIndexes.join(", ")} ({h.retrySources.join(", ")}); final {h.finalStatus}.</li>)}</ol>
+                    </details>
                   </th>
                   <td data-label="Verdict">
                     <span className={`badge badge-${test.verdict}`}>{labelFor(test.verdict)}</span>
                   </td>
-                  <td data-label="Score">{formatPercent(test.flakinessScore)}</td>
-                  <td data-label="Flip rate">{formatPercent(test.flipRate)}</td>
+                  <td data-label="Heuristic score">{test.verdict === "flaky" ? formatPercent(test.flakinessScore) : "—"}</td>
+                  <td data-label="Flip rate">{test.verdict === "flaky" ? formatPercent(test.flipRate) : "—"}</td>
                   <td data-label="Executions">{test.executions}</td>
                   <td data-label="Impact">{formatImpact(test.impact)}</td>
                   <td data-label="History">
@@ -193,17 +204,17 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
           <button type="button" onClick={() => download("flakelens-report.md", analysisToMarkdown(analysis, cost), "text/markdown")}>
             Download Markdown
           </button>
-          <button type="button" onClick={() => void copyQuarantine()}>
-            Copy quarantine list
+          <button type="button" onClick={() => void copyReview()}>
+            Copy review candidates
           </button>
         </div>
-        <label htmlFor="quarantine-list">Quarantine list</label>
-        <textarea id="quarantine-list" readOnly value={quarantine} data-testid="quarantine-list" />
+        <label htmlFor="review-list">Review candidates — not a quarantine policy</label>
+        <textarea id="review-list" readOnly value={candidates} data-testid="review-list" />
         {copyNote ? <p role="status">{copyNote}</p> : null}
       </section>
 
       {analysis.runs.some((run) => run.commitSource !== "file") ? (
-        <p className="hint">Some commits were taken from the filename or from file order because the XML had no commit property.</p>
+        <p className="hint">Some identifiers came from filenames or file-order fallback. Fallback labels are not verified commit/run evidence; see per-test warnings.</p>
       ) : null}
     </div>
   );
@@ -212,7 +223,8 @@ export function Results({ analysis, sourceLabel }: { analysis: Analysis; sourceL
 function labelFor(verdict: Verdict): string {
   if (verdict === "flaky") return "Flaky";
   if (verdict === "regression") return "Regression";
-  return "Stable";
+  if (verdict === "insufficient-evidence") return "Insufficient evidence";
+  return "No failures observed";
 }
 
 function formatPercent(value: number): string {

@@ -1,4 +1,4 @@
-import { XMLParser } from "fast-xml-parser";
+import { XMLParser, XMLValidator } from "fast-xml-parser";
 import type { Attempt, AttemptStatus, CommitSource, ParsedRun, RunIdSource } from "@/lib/types";
 
 export class JUnitParseError extends Error {
@@ -59,6 +59,9 @@ export function parseJUnit(xml: string, filename: string, order: number): Parsed
     throw new JUnitParseError(`${filename} is empty.`);
   }
 
+  if (/<!DOCTYPE|<!ENTITY|\u0000/i.test(cleaned) || XMLValidator.validate(cleaned) !== true) {
+    throw new JUnitParseError(`${filename} is malformed or contains unsupported XML declarations.`);
+  }
   let raw: unknown;
   try {
     raw = parser.parse(cleaned) as unknown;
@@ -104,8 +107,7 @@ export function parseJUnit(xml: string, filename: string, order: number): Parsed
       if (!node) continue;
       const name = stringAttr(node, "@_name");
       if (!name) {
-        warnings.push("Skipped a testcase with no name.");
-        continue;
+        throw new JUnitParseError(`${filename} contains an unnamed testcase; partial analysis is refused.`);
       }
       const classname = stringAttr(node, "@_classname") || stringAttr(node, "@_file") || stringAttr(suite, "@_name");
       const id = classname ? `${classname} > ${name}` : name;
@@ -125,6 +127,7 @@ export function parseJUnit(xml: string, filename: string, order: number): Parsed
         message: failure.message,
         details: failure.details,
         retryIndex,
+        retrySource: explicitRetry != null && /^\d+$/.test(explicitRetry) && Number.isSafeInteger(Number(explicitRetry)) ? "property" : "sequence",
         sequence,
         commit,
         runId,

@@ -1,93 +1,64 @@
 # FlakeLens
 
-FlakeLens is a privacy-first flaky-test triage tool. You give it several JUnit XML files — one CI run each — and it separates oscillating tests from real regressions, then clusters the failures into root causes. Parsing and scoring run in the browser. There is no database and no upload API.
+Local CI-failure triage from JUnit XML: **insufficient evidence**, observed flaky signals, persistent regression patterns, and no failures observed. Every verdict includes the runs, attempts, retry provenance, caller-supplied commit metadata, rule reasons, limitations and a suggested next investigation. Browser and CLI share the parser, classifier and native report renderers. No upload API or database.
 
-The sample history is synthetic: a fictional shop called Marigold, produced by a seeded generator. It is not anyone's CI.
+## Review/release status
 
-## Run
+This increment is stacked on open, **unmerged** PR #7 (shared QE results), which is stacked on open PR #4 (thin CLI). Main at inspection was `c5f5d326a02f72972c9521515a65f8344f53ca6e`; #4 was `ec0969e0e2b3171f664cd351c60979b5c227fcbf`; #7 was `e0a76acf21b83a0cb4b73ee82035582ed8488e1b`. No GitHub releases existed and the npm package is private. Do not assume main, the hosted browser site, or an npm release includes these changes. No PRs were merged or closed for this increment.
 
-Node 24 (see `.nvmrc`).
+## Local use
+
+Requires Node 24 and Git. From the reviewed checkout:
 
 ```bash
-nvm use
-npm install
-npx playwright install chromium
+npm ci --ignore-scripts
 npm test
+node --test qe-result*.test.mjs
+npx --no-install tsc --noEmit
+npm run lint
+npx --no-install playwright install chromium
 npm run test:e2e
 npm run build
 npm run dev
 ```
 
-`npm run build` is a standard Next.js build, suitable for Vercel with no extra config. This repo does not deploy anything.
+If port 3000 is already occupied, use `FLAKELENS_TEST_PORT=4327 npm run test:e2e`; the test server stays loopback-only. Browser tests compare every synthetic verdict, reason and run history with actual CLI output and check desktop/mobile accessibility.
 
-Regenerate the committed demo fixtures after changing the seed plan:
-
-```bash
-npm run generate:demo
-```
-
-## What the demo contains
-
-`scripts/generate-demo.ts` writes 30 JUnit files to `public/demo/`. The outcomes are fixed in `src/lib/demo-plan.ts`:
-
-- 5 flaky tests (retry recoveries, same-commit reruns, and intermittent failures)
-- 1 regression, introduced at run 18 and failed on every attempt after that
-- 3 failure clusters after normalization
-- 12 stable tests that always pass
-
-Runs 1–10 look like Playwright XML, 11–20 like Jest, 21–30 like pytest. Test ids stay the same so the history joins.
-
-## Privacy model
-
-Dropped files are read with the File API and parsed locally. They are not sent to a server. The only network request the app makes for analysis is when you click **Load demo data**, which fetches the static synthetic XML from this same origin.
-
-The waitlist field writes the address to `localStorage` and opens a `mailto:` draft. There is no account server and no payment.
-
-This site uses Vercel Web Analytics (cookieless, aggregated page views, no personal profiles). Privacy questions: dave.eliran.assistant@gmail.com.
-
-## How a verdict is chosen
-
-- **Regression.** Final results are all failures, or they switch once from pass to fail and then at least two runs stay failed. Every attempt from that commit onward fails, including retries, and no commit contains both a pass and a fail.
-- **Flaky.** The test fails without meeting that bar. A pass on retry, a same-commit rerun, or a single trailing failure all count. The flakiness score is `min(1, flip events / runs)`.
-- **Stable.** No failing attempts. Skips are ignored.
-
-Flip events are same-commit pass/fail mixes, runs that passed on retry, and oscillations of the final result between consecutive runs. Flip rate is flip events divided by executions (non-skip attempts). **Impact = flip rate × executions.** The cost estimate treats each failed attempt on a flaky test as one investigation. Regressions are listed separately and are not included. Minutes and hourly rate are editable assumptions.
-
-Failure clustering strips line:column numbers, durations, absolute paths, hex ids, and timestamps, then groups the remaining text. The summary reads `N failures = K root causes`.
-
-## Export
-
-Download a JSON report, download Markdown, or copy the quarantine list (the flaky test ids, one per line).
-
-## Limitations
-
-- Labels are a heuristic, not a proof that a test is nondeterministic or that a break is a product bug.
-- One file is one run. Retries are repeated testcase names or a numeric `retry` property.
-- Same-commit detection needs a shared SHA across files, or both outcomes inside one file.
-- A single trailing failure is called flaky. A test that fails in every uploaded run is a regression since the first included commit, which may be older than the underlying break.
-- Normalization can merge unrelated failures when the remaining words match, and it will split one cause when the messages differ by more than the stripped tokens.
-- There is no memory across reloads.
-
-## Runner CLI (thin adapter)
-
-The CLI uses the same `parseJUnit`, `analyzeRuns` and report renderers as the browser—no separate flakiness algorithm, server or upload API. With Node 24 and locked dependencies installed:
+The existing thin CLI remains the entry point:
 
 ```bash
-npm ci --ignore-scripts
+mkdir new-reports
 node --import tsx scripts/cli.ts \
-  --json /new/output/flakelens.json --markdown /new/output/flakelens.md \
-  /inputs/junit-01.xml /inputs/junit-02.xml /inputs/junit-03.xml
+  --json new-reports/flakelens.json --markdown new-reports/flakelens.md \
+  tests/fixtures/evidence/run-1.xml tests/fixtures/evidence/run-2.xml \
+  tests/fixtures/evidence/run-3.xml tests/fixtures/evidence/missing-metadata.xml
 ```
 
-Outputs must be distinct new files in existing directories. Exit `0` means analysis was produced (flakiness/regression findings are informational), and `2` means invalid input or a local tool/I/O failure. CI can append the Markdown to its job summary. Artifacts can also be loaded into the browser at <https://flakelens.vercel.app>.
+Outputs must be new distinct files in an existing directory. A `qe-result-flakelens.json` is also produced (`--qe-result` changes its path). Exit **0 means analysis completed, not a passing CI run**; exit **2** means invalid/unsafe input or a tool/I/O failure. Keep the original failing test job red. Do not quarantine or ignore failures based on these labels. See [reproducible CI quickstart](docs/CI_QUICKSTART.md).
 
-The adapter limits input to 100 files, 2 MiB per file, 10 MiB total and 50,000 attempts per file; it rejects symbolic-link final components, DTD/entity declarations, invalid UTF-8 and malformed XML before calling the shared parser. This is bounded local file processing, not an OS sandbox. Reports may contain sensitive test names and failure text; choose artifact visibility accordingly. No repository/test code is executed by parsing. Five reruns of one commit can show same-commit flakiness but cannot prove a commit-regression boundary.
+## Evidence policy
 
-## Roadmap
+- **Insufficient evidence:** one failure; cross-commit oscillation alone; all failures without a passing baseline; skipped-only samples; or an unqualified regression boundary. Investigate rather than suppress.
+- **Flaky:** explicit retry recovery or both pass/fail outcomes at a provided commit. This is observed variation, not proof of nondeterminism or harmlessness. Inferred repeated testcase order is not advertised as a confirmed retry.
+- **Regression:** a passing observation followed by two or more independent timestamp-ordered all-failing runs, with commit/run metadata and a changed commit. The first observed failing commit is not a proven causal commit. Older unrelated flaky history cannot hide this pattern.
+- **Stable:** no failures observed, with at least one passing attempt. This is not a promise about future runs.
 
-- A dedicated GitHub Action and persisted-history integration. The thin runner CLI above does not provide these.
-- A paid tier for saved history across branches and a shared quarantine list. Not built here, and this POC does not take payment.
+See [policy, limitations, migration, follow-ups and proposed metrics](docs/TRIAGE_POLICY.md). Shared QE result v1 is unchanged: regression → FAIL; flaky or insufficient evidence → WARN; only no observed findings → PASS. CLI analysis-only exits are unchanged.
+
+## Reports and privacy
+
+Expand **Why this verdict** in the browser or read native JSON/Markdown. JSON **version 2** adds evidence and abstention; `quarantine` and `actionsApplied` are always empty. Review candidates are not an executable quarantine policy. Heuristic scores are ranking signals, not probabilities; abstention scores are not computed. Message-similarity clusters are not confirmed root causes. Editable cost scenarios are not measured costs or savings and exclude regressions/insufficient evidence.
+
+JUnit is processed locally. Browser analysis does not send selected files to a service; the synthetic demo fetches static local-origin fixtures. Existing Vercel cookieless page analytics remains disclosed on the page, separate from analysis. The optional waitlist remains localStorage plus a mailto draft, not a signup backend. No histories are automatically fetched or persisted. CI artifact uploads are explicit transport under your control: reports include names, messages and metadata, so choose visibility and retention carefully.
+
+The CLI retains its existing bounds (100 files, 2 MiB/file, 10 MiB total, 50,000 attempts/file), final-component symlink rejection and no-overwrite outputs. Browser and CLI reject malformed XML/DTD/entities and unnamed testcases; invalid selections do not silently leave a partial clean result. Browser resource limits are not equivalent to the bounded CLI. One file must be one CI run; do not mix branches, unrelated jobs, shards or environments without reviewing identity/provenance.
+
+## Synthetic evidence, not customers
+
+`tests/fixtures/evidence/` defines eight explicit cases with an independent expected-verdict manifest. Public `qe-dogfood` consumes an immutable product revision; no second classifier is copied there.
+
+The original 30-file Marigold demo and seed generator are unchanged. It seeds five intermittent/recovery cases; the conservative observed-evidence policy classifies three as flaky and abstains on two cross-commit-only cases, while preserving the one regression, 12 no-failure cases and all 32 raw failed attempts. No baselines or XML were regenerated to make checks green. See recorded before/after examples and actual verification receipts under `docs/evidence/`.
 
 ## License
 
-All rights reserved. The owner has not chosen a public license yet. See `LICENSE`.
+See `LICENSE`. This work does not change the existing license or publish a package.

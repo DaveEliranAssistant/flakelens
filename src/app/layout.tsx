@@ -11,7 +11,7 @@ const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variabl
 export const metadata: Metadata = {
   title: "FlakeLens — flaky test triage in your browser",
   description:
-    "Privacy-first triage for flaky tests. Parse JUnit from Playwright, Jest, and pytest locally, separate flakes from regressions, and cluster root causes without uploading CI logs.",
+    "Privacy-first triage for flaky tests. Parse JUnit from Playwright, Jest, and pytest locally, explain insufficient evidence and regression patterns, and group similar failures without uploading CI logs.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

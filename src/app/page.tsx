@@ -31,7 +31,7 @@ export default function HomePage() {
               <h1>Separate the flakes from the breaks.</h1>
               <p className="lede">
                 Drop in JUnit from Playwright, Jest, or pytest. FlakeLens builds a per-test history, scores pass/fail
-                flips and retry recoveries, and clusters stack traces into root causes. Parsing and scoring run in your
+                flips and explicit retry recoveries, and groups similar failure messages into heuristic clusters. Parsing and scoring run in your
                 browser.
               </p>
               <p className="pledge">Your files never leave your browser.</p>
@@ -42,15 +42,15 @@ export default function HomePage() {
               <ol>
                 <li>
                   A verdict for every test
-                  <span>Flaky, regression since a commit, or stable.</span>
+                  <span>Insufficient evidence, flaky, regression pattern, or no failures observed — with reasons.</span>
                 </li>
                 <li>
-                  Root-cause clusters
+                  Heuristic failure clusters
                   <span>Line numbers, paths, durations, hex ids, and timestamps are stripped before grouping.</span>
                 </li>
                 <li>
-                  A quarantine list
-                  <span>Copy the flaky ids, or download JSON and Markdown. No account and no payment.</span>
+                  Actionable review candidates
+                  <span>Review evidence and download JSON/Markdown. No automatic quarantine, account, or payment.</span>
                 </li>
               </ol>
             </aside>
@@ -61,9 +61,7 @@ export default function HomePage() {
           <section className="limitations" id="roadmap">
             <h2>Roadmap</h2>
             <p>
-              Next is a GitHub Action and a CLI that print this same report on the runner, still without uploading JUnit
-              to a service. A later paid tier would add saved history across branches and a shared quarantine list.
-              This POC does not include either, and it does not take payment.
+              The repository CLI uses this same parser and scorer locally on a CI runner; see the pinned CI quickstart in the repository. This increment remains in review, not a package release. Future work: explicit owner/expiry quarantine policy and customer-controlled history comparisons. Neither is implemented; no hosted history or payment is required.
             </p>
           </section>
 
@@ -73,10 +71,11 @@ export default function HomePage() {
             <h2>Limitations</h2>
             <ul>
               <li>The labels are a heuristic. A flake can still be a real bug, and a clean break can still be environmental.</li>
-              <li>Each file is one CI run. Retries are repeated testcase names, or a numeric retry property.</li>
-              <li>A regression needs a pass-to-fail boundary, then at least two failing runs, with no later pass and no retry recovery.</li>
-              <li>One trailing failure is called flaky. A test that fails in every uploaded run is a regression since the first commit you included.</li>
-              <li>Clustering merges failures only when the text still matches after normalization. Different wording stays split.</li>
+              <li>Each file must represent one CI run. Explicit numeric retry metadata is distinguished from repeated names; names alone do not prove a retry.</li>
+              <li>A regression pattern needs a passing observation, then two independent timestamp-ordered all-failing runs, provided commit/run metadata and a changed commit. It does not prove causality.</li>
+              <li>Single failures, all-failing histories without a passing baseline, cross-commit oscillations alone, and skipped-only tests yield insufficient evidence. Missing metadata is visible; a retry recovery can still be informative without a commit.</li>
+              <li>Heuristic clustering merges only matching normalized text. Similar text need not share a root cause; different wording can split one cause.</li>
+              <li>No test is automatically quarantined. Neither flakes nor insufficient evidence make a failing CI run safe to ignore. Cost numbers are editable scenarios, not measured savings.</li>
               <li>Refresh clears the analysis. Nothing is stored except a waitlist address you choose to keep in local storage.</li>
             </ul>
           </section>

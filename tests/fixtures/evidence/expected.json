@@ -1,0 +1,13 @@
+{
+  "label": "SYNTHETIC FIXTURE ONLY, not actual customer CI or measured business outcomes",
+  "expectedVerdicts": {
+    "triage > single": "insufficient-evidence",
+    "triage > recovery": "flaky",
+    "triage > regression": "regression",
+    "triage > never-green": "insufficient-evidence",
+    "triage > cross-commit": "insufficient-evidence",
+    "triage > missing": "insufficient-evidence",
+    "triage > skip-only": "insufficient-evidence",
+    "triage > clean": "stable"
+  }
+}

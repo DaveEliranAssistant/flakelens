@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { estimateFlakeCost } from "@/lib/impact";
-import { analysisToMarkdown, quarantineList } from "@/lib/report";
+import { analysisToMarkdown, analysisToJson, reviewList, quarantineList } from "@/lib/report";
 import { FLAKY_TEST_IDS, REGRESSION_TEST_ID } from "@/lib/demo-plan";
 import { loadDemoAnalysis } from "../helpers/load-demo";
 
@@ -13,15 +13,20 @@ describe("impact and export", () => {
     expect(estimateFlakeCost(Number.NaN, 15, 100).cost).toBe(0);
   });
 
-  it("exports a local report and the flaky quarantine list", () => {
+  it("exports honest local evidence and review candidates without a quarantine policy", () => {
     const analysis = loadDemoAnalysis();
     const markdown = analysisToMarkdown(analysis, estimateFlakeCost(analysis.flakyFailures, 15, 100));
-    const list = quarantineList(analysis).split("\n");
+    const list = reviewList(analysis).split("\n");
+    const json = JSON.parse(analysisToJson(analysis, null));
+    expect(quarantineList()).toBe("");
+    expect(json.quarantine).toEqual([]);
+    expect(json.actionsApplied).toEqual([]);
     expect(markdown).toContain("Source files were not uploaded.");
-    expect(markdown).toContain(REGRESSION_TEST_ID);
-    expect(markdown).toContain("32 failures = 3 root causes");
-    expect(list).toEqual([FLAKY_TEST_IDS[1], FLAKY_TEST_IDS[0], FLAKY_TEST_IDS[3], FLAKY_TEST_IDS[2], FLAKY_TEST_IDS[4]]);
-    expect(list).not.toContain(REGRESSION_TEST_ID);
-    expect(markdown).toContain("475.00");
+    expect(markdown).toContain(REGRESSION_TEST_ID.replace(">", "\\>"));
+    expect(markdown).toContain("32 failed attempts · 3 heuristic message clusters (not confirmed root causes)");
+    expect(list).toEqual([REGRESSION_TEST_ID, FLAKY_TEST_IDS[3], FLAKY_TEST_IDS[1], FLAKY_TEST_IDS[2], FLAKY_TEST_IDS[0], FLAKY_TEST_IDS[4]]);
+    expect(json.reviewCandidates).toEqual(list);
+    expect(markdown).toContain("Not measured cost or savings.");
+    expect(markdown).toContain("250.00");
   });
 });

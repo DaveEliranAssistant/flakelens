@@ -1,0 +1,25 @@
+{
+  "runtimeRevision": "647f7d83b36b6f4d0878611078fea28e0babc583",
+  "localRuntime": "Node 24.22.2 on macOS",
+  "baselineRevision": "e0a76acf21b83a0cb4b73ee82035582ed8488e1b",
+  "baselineUnitTestsPassed": 22,
+  "unitTestsPassed": 43,
+  "sharedResultTestsPassed": 4,
+  "browserTestsPassed": 3,
+  "desktopMobileAxeViolations": 0,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "productionBuild": "passed",
+  "freshPublicCloneQuickstart": "passed at exact runtime pin",
+  "strictSharedContract": "actual generated record validated against pinned unchanged qe-result v1 schema",
+  "qualityRun": "https://github.com/DaveEliranAssistant/flakelens/actions/runs/41661594658",
+  "qualityRunConclusion": "success",
+  "sharedContractRun": "https://github.com/DaveEliranAssistant/flakelens/actions/runs/41661594570",
+  "syntheticOnly": true,
+  "customerMetrics": "not measured",
+  "knownDependencyAdvisories": {
+    "moderate": 16,
+    "scope": "existing locked dependency tree; no force upgrade or audit bypass"
+  },
+  "distribution": "review code; no release, package publication, merge or deployment claimed"
+}
