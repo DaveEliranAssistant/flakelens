@@ -14,7 +14,9 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "generate:demo": "tsx scripts/generate-demo.ts"
+    "generate:demo": "tsx scripts/generate-demo.ts",
+    "build:cli": "node scripts/build-cli.mjs",
+    "test:pack": "npm run build:cli && node scripts/test-cli-pack.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -28,6 +30,7 @@
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "esbuild": "0.28.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.3",
     "tsx": "^4.23.15",
