@@ -1,0 +1,41 @@
+{
+  "name": "@qe-atlas/flakelens",
+  "version": "0.1.0-rc.1",
+  "description": "Local JUnit flaky-test triage with JSON and Markdown reports.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "flakelens": "dist/cli.mjs"
+  },
+  "files": [
+    "dist/cli.mjs",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaveEliranAssistant/flakelens.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://flakelens.vercel.app",
+  "bugs": {
+    "url": "https://github.com/DaveEliranAssistant/flakelens/issues"
+  },
+  "keywords": [
+    "junit",
+    "flaky-tests",
+    "testing",
+    "ci"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
+  },
+  "dependencies": {
+    "fast-xml-parser": "5.11.2"
+  }
+}
