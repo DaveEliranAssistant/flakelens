@@ -1,6 +1,6 @@
 # FlakeLens
 
-FlakeLens is a privacy-first flaky-test triage tool. You give it several JUnit XML files — one CI run each — and it separates oscillating tests from real regressions, then clusters the failures into root causes. Parsing and scoring run in the browser. There is no database and no upload API.
+FlakeLens is a privacy-first flaky-test triage tool. You give it several JUnit XML files — one CI run each — and it separates oscillating tests from real regressions, then clusters the failures into root causes. Parsing and scoring run in the browser. There is no upload API, and JUnit files never reach a server. The only server-side data is a consented waitlist, which does not gate the browser tool or the CLI.
 
 The sample history is synthetic: a fictional shop called Marigold, produced by a seeded generator. It is not anyone's CI.
 
@@ -41,7 +41,15 @@ Runs 1–10 look like Playwright XML, 11–20 like Jest, 21–30 like pytest. Te
 
 Dropped files are read with the File API and parsed locally. They are not sent to a server. The only network request the app makes for analysis is when you click **Load demo data**, which fetches the static synthetic XML from this same origin.
 
-The waitlist field writes the address to `localStorage` and opens a `mailto:` draft. There is no account server and no payment.
+The waitlist is the only form that sends data to the server, and only after consent. There is no account and no payment. The waitlist does not gate the browser tool, the CLI, or the npm package.
+
+### Waitlist
+
+The landing page posts to `POST /api/waitlist`. `GET /api/waitlist` returns only `{"available":true}` when the list is open, or a 503 when it is not. There is no public count, and duplicates get the same response as new signups.
+
+The table stores the normalized email, consent, `created_at`, source (`landing`), and a SHA-256 hash of the user agent. It does not store an IP address; the address is used only for a short in-memory rate limit. Signups are kept until the person asks for deletion. To withdraw or delete, they email dave.eliran.assistant@gmail.com from the address they used.
+
+Vercel runs `npm run vercel-build`, which applies `sql/waitlist.sql` and then `next build`. The migration reads `DATABASE_URL_POOLED`, then `DATABASE_URL`. If neither is set, the migration is skipped and the build continues, and the form says the waitlist is temporarily unavailable. If a URL is set and the migration fails, the build stops and the log does not include the connection string. `npm run build` does not migrate. `npm run db:migrate` runs only the migration.
 
 This site uses Vercel Web Analytics (cookieless, aggregated page views, no personal profiles). Privacy questions: dave.eliran.assistant@gmail.com.
 
