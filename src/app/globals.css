@@ -233,7 +233,7 @@ textarea { width: 100%; min-height: 7rem; font-family: var(--mono); font-size: 0
 
 .clusters { display: grid; gap: 0.7rem; }
 
-.cluster pre {
+.cluster pre, .limitations pre {
   white-space: pre-wrap;
   font-family: var(--mono);
   font-size: 0.75rem;

@@ -58,11 +58,29 @@ export default function HomePage() {
 
           <Workspace />
 
+          <section className="limitations" id="cli">
+            <h2>Run it from the command line</h2>
+            <p>
+              The same parser and scorer are published on npm as <code>@qe-atlas/flakelens</code>. Version 0.1.0-rc.1 is a
+              prerelease. It needs Node 22 or newer and targets Linux and macOS; Windows is not qualified. Pass one JUnit
+              file per CI run:
+            </p>
+            <pre>{`npm exec --package=@qe-atlas/flakelens@0.1.0-rc.1 -- flakelens \\
+  --json report.json --markdown report.md run-1.xml run-2.xml run-3.xml`}</pre>
+            <p>
+              npm downloads the package from its registry, but your JUnit files are analyzed locally and not uploaded. The
+              command writes the JSON and Markdown reports plus <code>qe-result-flakelens.json</code> beside the JSON
+              report. Output paths must not already exist. Exit 0 means a report was produced, even when it finds flakes or
+              regressions, so this version does not fail a build on findings. Exit 2 means invalid input or a local
+              failure. Reports can contain file paths and failure text, so review them before sharing.
+            </p>
+          </section>
+
           <section className="limitations" id="roadmap">
             <h2>Roadmap</h2>
             <p>
-              Next is a GitHub Action and a CLI that print this same report on the runner, still without uploading JUnit
-              to a service. A later paid tier would add saved history across branches and a shared quarantine list.
+              Next is a GitHub Action that prints this same report on the runner, still without uploading JUnit to a
+              service. A later paid tier would add saved history across branches and a shared quarantine list.
               This POC does not include either, and it does not take payment.
             </p>
           </section>
