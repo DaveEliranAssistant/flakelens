@@ -92,6 +92,12 @@ The adapter limits input to 100 files, 2 MiB per file, 10 MiB total and 50,000 a
 
 MIT. See `LICENSE`.
 
-## CLI package (npm publish pending)
+## CLI package
 
-The web root stays private. See [the isolated @qe-atlas/flakelens package](packages/cli/README.md) for local tarball installation, the npm commands that apply once it is published, and current informational exit-code limits, and [launch verification](docs/FREE-LAUNCH.md) for build/provenance/test evidence. `npm run test:pack` builds and smoke-tests the actual installed archive.
+`@qe-atlas/flakelens@0.1.0-rc.1` is published on npm with dist-tags `latest` and `next`. It is a prerelease.
+
+```sh
+npm exec --package=@qe-atlas/flakelens@0.1.0-rc.1 -- flakelens --help
+```
+
+The web root stays private. See [the isolated @qe-atlas/flakelens package](packages/cli/README.md) for usage, local tarball installation and current informational exit-code limits, and [launch verification](docs/FREE-LAUNCH.md) for build/provenance/test evidence. `npm run test:pack` builds and smoke-tests the actual installed archive.

@@ -1,6 +1,6 @@
 # @qe-atlas/flakelens
 
-Local JUnit flaky-test triage using the same parser/scorer as FlakeLens. Prerelease **0.1.0-rc.1** on the npm `next` tag. Node 22+; Linux/macOS targeted. Windows is not qualified (`O_NOFOLLOW` file handling is platform dependent).
+Local JUnit flaky-test triage using the same parser/scorer as FlakeLens. Prerelease **0.1.0-rc.1** on the npm `latest` and `next` dist-tags. Node 22+; Linux/macOS targeted. Windows is not qualified (`O_NOFOLLOW` file handling is platform dependent).
 
 ## Use
 
