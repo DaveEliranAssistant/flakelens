@@ -44,5 +44,4 @@ test("loads the synthetic demo and shows flaky and regression verdicts", async (
   // Tax precedes inventory when the product ties because its id sorts first.
   const quarantine = [FLAKY_TEST_IDS[1], FLAKY_TEST_IDS[0], FLAKY_TEST_IDS[3], FLAKY_TEST_IDS[2], FLAKY_TEST_IDS[4]];
   await expect(page.getByTestId("quarantine-list")).toHaveValue(quarantine.join("\n"));
-  await expect(page.getByTestId("waitlist-form")).not.toHaveAttribute("action");
 });

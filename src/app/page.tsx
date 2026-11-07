@@ -95,7 +95,7 @@ export default function HomePage() {
               <li>A regression needs a pass-to-fail boundary, then at least two failing runs, with no later pass and no retry recovery.</li>
               <li>One trailing failure is called flaky. A test that fails in every uploaded run is a regression since the first commit you included.</li>
               <li>Clustering merges failures only when the text still matches after normalization. Different wording stays split.</li>
-              <li>Refresh clears the analysis. Nothing is stored except a waitlist address you choose to keep in local storage.</li>
+              <li>Refresh clears the analysis. JUnit files are not stored. The waitlist is the only form that sends data to the server, and only after you consent.</li>
             </ul>
           </section>
         </main>

@@ -227,6 +227,18 @@ input[type="number"], input[type="email"], textarea {
 
 input[type="email"] { width: min(100%, 22rem); }
 
+.waitlist .waitlist-full { flex-basis: 100%; margin: 0; }
+
+.waitlist-error { color: var(--wine); }
+
+.waitlist .waitlist-consent { display: flex; gap: 0.5rem; align-items: start; }
+
+.waitlist-consent input { margin-top: 0.25rem; }
+
+.waitlist-trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.waitlist details { margin-top: 1rem; }
+
 textarea { width: 100%; min-height: 7rem; font-family: var(--mono); font-size: 0.82rem; }
 
 .figure { font-family: var(--serif); font-size: 2rem; margin: 0.4rem 0; }
