@@ -21,6 +21,7 @@ export default function HomePage() {
             <a href="#triage">Triage</a>
             <a href="#roadmap">Roadmap</a>
             <a href="#limitations">Limitations</a>
+            <a href="https://github.com/DaveEliranAssistant/flakelens/discussions/categories/ideas">Give feedback</a>
           </nav>
         </header>
 
@@ -101,10 +102,11 @@ export default function HomePage() {
         </main>
 
         <footer className="site-footer">
-          <p>FlakeLens POC. All rights reserved.</p>
+          <p>MIT. See <a href="https://github.com/DaveEliranAssistant/flakelens/blob/main/LICENSE">LICENSE</a>.</p>
           <nav aria-label="Footer">
             <a href="#triage">Triage</a>
             <a href="#limitations">Limitations</a>
+            <a href="https://github.com/DaveEliranAssistant/flakelens/discussions/categories/ideas">Give feedback</a>
           </nav>
           <p className="privacy-note">
             This site uses Vercel Web Analytics (cookieless, aggregated page views, no personal profiles). Privacy

@@ -6,6 +6,11 @@ test("loads the synthetic demo and shows flaky and regression verdicts", async (
   if (!introduced) throw new Error("Seeded regression commit is missing.");
 
   await page.goto("/");
+  const footer = page.getByRole("contentinfo");
+  await expect(footer).toContainText("MIT. See LICENSE.");
+  await expect(footer.getByRole("link", { name: "Give feedback" })).toHaveAttribute(
+    "href", "https://github.com/DaveEliranAssistant/flakelens/discussions/categories/ideas",
+  );
   await expect(page.getByText("Your files never leave your browser")).toBeVisible();
   await expect(page.getByText("Demo data is synthetic.")).toBeVisible();
   await expect(
