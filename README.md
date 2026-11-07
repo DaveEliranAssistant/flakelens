@@ -18,7 +18,7 @@ npm run build
 npm run dev
 ```
 
-`npm run build` is a standard Next.js build, suitable for Vercel with no extra config. This repo does not deploy anything.
+`npm run build` is a standard Next.js build, suitable for Vercel with no extra config. Production is live at [flakelens.vercel.app](https://flakelens.vercel.app). The Vercel project is Git-linked to this repository.
 
 Regenerate the committed demo fixtures after changing the seed plan:
 
@@ -108,4 +108,6 @@ MIT. See `LICENSE`.
 npm exec --package=@qe-atlas/flakelens@0.1.0-rc.1 -- flakelens --help
 ```
 
-The web root stays private. See [the isolated @qe-atlas/flakelens package](packages/cli/README.md) for usage, local tarball installation and current informational exit-code limits, and [launch verification](docs/FREE-LAUNCH.md) for build/provenance/test evidence. `npm run test:pack` builds and smoke-tests the actual installed archive.
+The web app source is public in [DaveEliranAssistant/flakelens](https://github.com/DaveEliranAssistant/flakelens). See [the isolated @qe-atlas/flakelens package](packages/cli/README.md) for usage, local tarball installation and current informational exit-code limits, and [launch verification](docs/FREE-LAUNCH.md) for build/provenance/test evidence. `npm run test:pack` builds and smoke-tests the actual installed archive.
+
+[Give feedback](https://github.com/DaveEliranAssistant/flakelens/discussions/categories/ideas).
